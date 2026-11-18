@@ -1,0 +1,23 @@
+{
+  "name": "kimovolt-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KIMOVOLT LAB — Interactive electronics learning platform & DC circuit workbench",
+  "license": "UNLICENSED",
+  "workspaces": [
+    "simulation",
+    "content",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspace=simulation && npm run build --workspace=content && npm run build --workspace=frontend",
+    "test": "npm test --workspace=simulation && npm test --workspace=content",
+    "test:e2e": "playwright test",
+    "typecheck": "npm run typecheck --workspace=simulation && npm run typecheck --workspace=content && npm run typecheck --workspace=frontend"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.51.1",
+    "typescript": "^5.8.2"
+  }
+}

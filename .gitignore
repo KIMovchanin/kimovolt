@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+frontend/dist/
+simulation/dist/
+content/dist/
+*.exe
+*.out
+
+# Databases & local env
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+.env
+.env.*
+!.env.example
+
+# Tests & coverage
+coverage/
+playwright-report/
+test-results/
+tests/e2e/screenshots/
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/

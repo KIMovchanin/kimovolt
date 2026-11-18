@@ -1,0 +1,132 @@
+/* ==========================================================================
+   KIMOVOLT LAB Design System Tokens
+   Obsidian Precision Dark (default) & Drafting Paper Blueprint Light
+   ========================================================================== */
+
+:root {
+  color-scheme: dark light;
+
+  /* Raw dark tokens (Obsidian Laboratory) */
+  --kv-dark-bg: #0C1014;
+  --kv-dark-surface: #141B21;
+  --kv-dark-elevated: #1C252C;
+  --kv-dark-grid-line: rgba(145, 160, 168, 0.08);
+  --kv-dark-border: #27333D;
+  --kv-dark-border-strong: #394A57;
+  --kv-dark-text: #F1F0E8;
+  --kv-dark-muted: #91A0A8;
+  --kv-dark-copper: #F5A05A;
+  --kv-dark-copper-ink: #120B05;
+  --kv-dark-cyan: #56D6D0;
+  --kv-dark-green: #A7E66F;
+  --kv-dark-amber: #F1BB58;
+  --kv-dark-coral: #FF746C;
+  --kv-dark-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+
+  /* Raw light tokens (Blueprint Engineering Paper) */
+  --kv-light-bg: #F4F0E5;
+  --kv-light-surface: #EAE4D3;
+  --kv-light-elevated: #FCFBF7;
+  --kv-light-grid-line: rgba(25, 36, 46, 0.08);
+  --kv-light-border: #C9C1AD;
+  --kv-light-border-strong: #9A907C;
+  --kv-light-text: #151C22;
+  --kv-light-muted: #4C5A64;
+  --kv-light-copper: #C25B16;
+  --kv-light-copper-ink: #FFFDF8;
+  --kv-light-cyan: #0D7B77;
+  --kv-light-green: #2F7D32;
+  --kv-light-amber: #A66500;
+  --kv-light-coral: #C62828;
+  --kv-light-shadow: 0 10px 28px rgba(21, 28, 34, 0.12);
+
+  /* Active semantic tokens (default = dark obsidian) */
+  --bg: var(--kv-dark-bg);
+  --surface: var(--kv-dark-surface);
+  --elevated: var(--kv-dark-elevated);
+  --grid-line: var(--kv-dark-grid-line);
+  --border: var(--kv-dark-border);
+  --border-strong: var(--kv-dark-border-strong);
+  --text: var(--kv-dark-text);
+  --muted: var(--kv-dark-muted);
+  --copper: var(--kv-dark-copper);
+  --copper-ink: var(--kv-dark-copper-ink);
+  --cyan: var(--kv-dark-cyan);
+  --green: var(--kv-dark-green);
+  --amber: var(--kv-dark-amber);
+  --coral: var(--kv-dark-coral);
+  --shadow-elevated: var(--kv-dark-shadow);
+
+  /* Typography */
+  --font-display: 'Unbounded', 'Golos Text', system-ui, sans-serif;
+  --font-sans: 'Golos Text', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  /* Motion timings */
+  --dur-fast: 160ms;
+  --dur-ui: 240ms;
+  --dur-learn: 480ms;
+  --ease-lab: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Scrollbar static colors (never transition scrollbar-color) */
+  scrollbar-color: var(--border-strong) var(--surface);
+}
+
+/* Explicit Light Blueprint Theme via <meta name="color-scheme" content="light"> or system fallback */
+@media (prefers-color-scheme: light) {
+  :root:has(> head > meta[name="color-scheme"][content="light dark"]) {
+    --bg: var(--kv-light-bg);
+    --surface: var(--kv-light-surface);
+    --elevated: var(--kv-light-elevated);
+    --grid-line: var(--kv-light-grid-line);
+    --border: var(--kv-light-border);
+    --border-strong: var(--kv-light-border-strong);
+    --text: var(--kv-light-text);
+    --muted: var(--kv-light-muted);
+    --copper: var(--kv-light-copper);
+    --copper-ink: var(--kv-light-copper-ink);
+    --cyan: var(--kv-light-cyan);
+    --green: var(--kv-light-green);
+    --amber: var(--kv-light-amber);
+    --coral: var(--kv-light-coral);
+    --shadow-elevated: var(--kv-light-shadow);
+  }
+}
+
+:root:has(> head > meta[name="color-scheme"][content="dark"]) {
+  color-scheme: dark;
+  --bg: var(--kv-dark-bg);
+  --surface: var(--kv-dark-surface);
+  --elevated: var(--kv-dark-elevated);
+  --grid-line: var(--kv-dark-grid-line);
+  --border: var(--kv-dark-border);
+  --border-strong: var(--kv-dark-border-strong);
+  --text: var(--kv-dark-text);
+  --muted: var(--kv-dark-muted);
+  --copper: var(--kv-dark-copper);
+  --copper-ink: var(--kv-dark-copper-ink);
+  --cyan: var(--kv-dark-cyan);
+  --green: var(--kv-dark-green);
+  --amber: var(--kv-dark-amber);
+  --coral: var(--kv-dark-coral);
+  --shadow-elevated: var(--kv-dark-shadow);
+}
+
+:root:has(> head > meta[name="color-scheme"][content="light"]) {
+  color-scheme: light;
+  --bg: var(--kv-light-bg);
+  --surface: var(--kv-light-surface);
+  --elevated: var(--kv-light-elevated);
+  --grid-line: var(--kv-light-grid-line);
+  --border: var(--kv-light-border);
+  --border-strong: var(--kv-light-border-strong);
+  --text: var(--kv-light-text);
+  --muted: var(--kv-light-muted);
+  --copper: var(--kv-light-copper);
+  --copper-ink: var(--kv-light-copper-ink);
+  --cyan: var(--kv-light-cyan);
+  --green: var(--kv-light-green);
+  --amber: var(--kv-light-amber);
+  --coral: var(--kv-light-coral);
+  --shadow-elevated: var(--kv-light-shadow);
+}

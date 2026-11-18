@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
+  <rect width="40" height="40" rx="8" fill="#0C1014" />
+  <rect x="1.5" y="1.5" width="37" height="37" rx="6.5" stroke="#293640" stroke-width="1.25" />
+  <!-- Vertical copper bus stem of K -->
+  <path d="M12 9V31" stroke="#F5A05A" stroke-width="2.75" stroke-linecap="round" />
+  <circle cx="12" cy="9" r="2.5" fill="#0C1014" stroke="#F5A05A" stroke-width="2" />
+  <circle cx="12" cy="31" r="2.5" fill="#0C1014" stroke="#F5A05A" stroke-width="2" />
+  <!-- Upper 45-deg PCB trace arm + schematic terminal -->
+  <path d="M12 20L19 20L27.5 11.5" stroke="#56D6D0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="29" cy="10" r="2.5" fill="#56D6D0" />
+  <!-- Lower K arm integrated with schematic diode/LED bar -->
+  <path d="M17.5 20L24.5 27" stroke="#F5A05A" stroke-width="2.4" stroke-linecap="round" />
+  <polygon points="22,22.5 27,27.5 24,29.5" fill="#F5A05A" />
+  <path d="M23.5 31.5L29.5 25.5" stroke="#F1F0E8" stroke-width="2.2" stroke-linecap="round" />
+  <path d="M26.5 28.5L29.5 31.5" stroke="#F5A05A" stroke-width="2.4" stroke-linecap="round" />
+</svg>

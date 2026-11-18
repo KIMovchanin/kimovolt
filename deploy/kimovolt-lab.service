@@ -1,0 +1,25 @@
+[Unit]
+Description=KIMOVOLT LAB Electronics Learning Platform
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=kimovolt
+Group=kimovolt
+WorkingDirectory=/opt/kimovolt-lab
+EnvironmentFile=/opt/kimovolt-lab/.env
+ExecStart=/opt/kimovolt-lab/kimovolt-lab-linux-arm64
+Restart=on-failure
+RestartSec=3s
+LimitNOFILE=65536
+
+# Security Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/opt/kimovolt-lab/data
+
+[Install]
+WantedBy=multi-user.target
