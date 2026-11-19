@@ -82,12 +82,31 @@ func SecurityHeadersMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func clientIP(r *http.Request) string {
+// ClientIP extracts the caller IP address, trusting X-Real-IP / X-Forwarded-For
+// only when the TCP peer is loopback (e.g., behind local Caddy reverse proxy).
+func ClientIP(r *http.Request) string {
 	host, _, err := net.SplitHostPort(r.RemoteAddr)
-	if err == nil && host != "" {
-		return host
+	if err != nil || host == "" {
+		host = strings.TrimSpace(r.RemoteAddr)
 	}
-	return r.RemoteAddr
+	remoteIP := net.ParseIP(host)
+	if remoteIP != nil && remoteIP.IsLoopback() {
+		if xRealIP := strings.TrimSpace(r.Header.Get("X-Real-IP")); xRealIP != "" {
+			if parsed := net.ParseIP(xRealIP); parsed != nil {
+				return parsed.String()
+			}
+		}
+		if xff := strings.TrimSpace(r.Header.Get("X-Forwarded-For")); xff != "" {
+			first, _, _ := strings.Cut(xff, ",")
+			if parsed := net.ParseIP(strings.TrimSpace(first)); parsed != nil {
+				return parsed.String()
+			}
+		}
+	}
+	if remoteIP != nil {
+		return remoteIP.String()
+	}
+	return host
 }
 
 func writeJSON(w http.ResponseWriter, status int, payload any) {
@@ -220,7 +239,7 @@ func (s *Server) issueSession(w http.ResponseWriter, userID string) (string, err
 }
 
 func (s *Server) handleRegister(w http.ResponseWriter, r *http.Request) {
-	if !s.authLimiter.Allow("reg:" + clientIP(r)) {
+	if !s.authLimiter.Allow("reg:" + ClientIP(r)) {
 		writeErr(w, http.StatusTooManyRequests, "too many attempts; please wait")
 		return
 	}
@@ -310,7 +329,7 @@ func (s *Server) handleRegister(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
-	if !s.authLimiter.Allow("login:" + clientIP(r)) {
+	if !s.authLimiter.Allow("login:" + ClientIP(r)) {
 		writeErr(w, http.StatusTooManyRequests, "too many login attempts")
 		return
 	}
@@ -516,7 +535,7 @@ func (s *Server) handleGetProgress(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleSaveProgress(w http.ResponseWriter, r *http.Request) {
-	if !s.writeLimiter.Allow("prog:" + clientIP(r)) {
+	if !s.writeLimiter.Allow("prog:" + ClientIP(r)) {
 		writeErr(w, http.StatusTooManyRequests, "rate limit exceeded")
 		return
 	}
@@ -554,7 +573,7 @@ func (s *Server) handleSaveProgress(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleMigrateGuest(w http.ResponseWriter, r *http.Request) {
-	if !s.writeLimiter.Allow("mig:" + clientIP(r)) {
+	if !s.writeLimiter.Allow("mig:" + ClientIP(r)) {
 		writeErr(w, http.StatusTooManyRequests, "rate limit exceeded")
 		return
 	}
@@ -673,7 +692,7 @@ func (s *Server) handleListCircuits(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleUpsertCircuit(w http.ResponseWriter, r *http.Request) {
-	if !s.writeLimiter.Allow("circ:" + clientIP(r)) {
+	if !s.writeLimiter.Allow("circ:" + ClientIP(r)) {
 		writeErr(w, http.StatusTooManyRequests, "rate limit exceeded")
 		return
 	}

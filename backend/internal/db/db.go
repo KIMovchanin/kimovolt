@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"embed"
 	"fmt"
+	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 
@@ -16,6 +18,15 @@ var migrationsFS embed.FS
 // Open opens a pure-Go SQLite database configured with WAL mode, foreign keys, and busy timeout,
 // and executes embedded SQL migrations idempotently.
 func Open(path string) (*sql.DB, error) {
+	if path != ":memory:" && !strings.HasPrefix(path, "file:") {
+		dir := filepath.Dir(path)
+		if dir != "" && dir != "." {
+			if err := os.MkdirAll(dir, 0o750); err != nil {
+				return nil, fmt.Errorf("create db directory: %w", err)
+			}
+		}
+	}
+
 	conn, err := sql.Open("sqlite", path)
 	if err != nil {
 		return nil, fmt.Errorf("open sqlite: %w", err)

@@ -64,3 +64,55 @@ go test -v ./...
 go run ./cmd/server
 # Приложение доступно на http://localhost:8080
 ```
+
+---
+
+## Эксплуатация на Oracle Cloud ARM64 (`kimovolt.com`)
+
+Подробная первоначальная настройка описана в [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md).
+
+### Конфигурация и секреты
+
+- Приложение **не требует внешних API-ключей или паролей БД** (используется локальная встроенная SQLite).
+- Серверные переменные задаются на VM в `/opt/kimovolt-lab/.env` (права `chmod 600`, шаблон — [`.env.example`](./.env.example)):
+  `BIND_ADDR=127.0.0.1`, `PORT=8080`, `DB_PATH=/opt/kimovolt-lab/data/kimovolt.db`, `STATIC_DIR=/opt/kimovolt-lab/frontend/dist`, `COOKIE_SECURE=true`, `PUBLIC_ORIGIN=https://kimovolt.com`, `KIMOVOLT_DOMAIN=kimovolt.com`.
+
+### Сборка и обновление
+
+```powershell
+# С локальной Windows-машины: кросс-сборка ARM64 + загрузка по SSH + бэкап SQLite + перезапуск
+.\scripts\deploy-arm64.ps1 -ServerIp <VM_IP> -KeyPath <ПУТЬ_К_SSH_КЛЮЧУ>
+```
+
+Локально на сервере (после ручного обновления файлов):
+
+```bash
+/opt/kimovolt-lab/deploy/update.sh
+```
+
+### Просмотр логов и состояния
+
+```bash
+sudo systemctl status kimovolt-lab
+sudo journalctl -u kimovolt-lab -f
+sudo journalctl -u kimovolt-lab -n 100 --no-pager
+sudo journalctl -u caddy -f
+```
+
+### Резервное копирование и восстановление SQLite
+
+```bash
+# Снять консистентный снимок БД вручную (пишет в /opt/kimovolt-lab/backups/kimovolt-*.db.gz)
+sudo -u kimovolt /opt/kimovolt-lab/deploy/backup-sqlite.sh
+
+# Просмотр расписания cron (рекомендуется ежедневно в 03:30 UTC: 30 3 * * * /opt/kimovolt-lab/deploy/backup-sqlite.sh)
+sudo crontab -u kimovolt -l
+
+# Восстановление из архива (сначала остановить сервис!)
+sudo systemctl stop kimovolt-lab
+sudo cp /opt/kimovolt-lab/data/kimovolt.db /opt/kimovolt-lab/data/kimovolt.db.pre-restore
+sudo sh -c 'gzip -dc /opt/kimovolt-lab/backups/kimovolt-YYYYMMDD-HHMMSS.db.gz > /opt/kimovolt-lab/data/kimovolt.db'
+sudo rm -f /opt/kimovolt-lab/data/kimovolt.db-wal /opt/kimovolt-lab/data/kimovolt.db-shm
+sudo chown kimovolt:kimovolt /opt/kimovolt-lab/data/kimovolt.db*
+sudo systemctl start kimovolt-lab
+```

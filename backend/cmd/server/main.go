@@ -26,10 +26,11 @@ func envOr(key, fallback string) string {
 func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
 
+	bindAddr := envOr("BIND_ADDR", "")
 	port := envOr("PORT", "8080")
 	dbPath := envOr("DB_PATH", "./kimovolt.db")
 	staticDir := envOr("STATIC_DIR", "./frontend/dist")
-	publicOrigin := envOr("PUBLIC_ORIGIN", "https://kimovolt.lab")
+	publicOrigin := envOr("PUBLIC_ORIGIN", "https://kimovolt.com")
 	cookieSecure := strings.EqualFold(envOr("COOKIE_SECURE", "false"), "true")
 
 	database, err := db.Open(dbPath)
@@ -45,7 +46,7 @@ func main() {
 	web.RegisterStaticAndSEO(mux, staticDir, publicOrigin)
 
 	httpServer := &http.Server{
-		Addr:              ":" + port,
+		Addr:              bindAddr + ":" + port,
 		Handler:           api.SecurityHeadersMiddleware(mux),
 		ReadHeaderTimeout: 10 * time.Second,
 		ReadTimeout:       20 * time.Second,
@@ -55,7 +56,7 @@ func main() {
 
 	errCh := make(chan error, 1)
 	go func() {
-		logger.Info("KIMOVOLT LAB server starting", "port", port, "db", dbPath, "staticDir", staticDir)
+		logger.Info("KIMOVOLT LAB server starting", "addr", httpServer.Addr, "db", dbPath, "staticDir", staticDir)
 		if err := httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			errCh <- err
 		}

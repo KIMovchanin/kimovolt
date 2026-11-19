@@ -11,7 +11,7 @@ import (
 func RegisterStaticAndSEO(mux *http.ServeMux, staticDir, publicOrigin string) {
 	origin := strings.TrimRight(strings.TrimSpace(publicOrigin), "/")
 	if origin == "" {
-		origin = "https://kimovolt.lab"
+		origin = "https://kimovolt.com"
 	}
 
 	mux.HandleFunc("GET /robots.txt", func(w http.ResponseWriter, _ *http.Request) {

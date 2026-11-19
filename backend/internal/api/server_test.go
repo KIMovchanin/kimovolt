@@ -187,3 +187,33 @@ func TestBackendIntegrationFlow(t *testing.T) {
 		t.Fatalf("unexpected robots.txt: %s", string(robotsBytes))
 	}
 }
+
+func TestClientIPBehindLoopbackProxy(t *testing.T) {
+	req1, _ := http.NewRequest(http.MethodGet, "/", nil)
+	req1.RemoteAddr = "127.0.0.1:54321"
+	req1.Header.Set("X-Real-IP", "203.0.113.10")
+	if got := api.ClientIP(req1); got != "203.0.113.10" {
+		t.Fatalf("expected X-Real-IP from loopback proxy, got %q", got)
+	}
+
+	req2, _ := http.NewRequest(http.MethodGet, "/", nil)
+	req2.RemoteAddr = "[::1]:54321"
+	req2.Header.Set("X-Forwarded-For", "198.51.100.7, 127.0.0.1")
+	if got := api.ClientIP(req2); got != "198.51.100.7" {
+		t.Fatalf("expected first X-Forwarded-For IP from IPv6 loopback proxy, got %q", got)
+	}
+
+	req3, _ := http.NewRequest(http.MethodGet, "/", nil)
+	req3.RemoteAddr = "198.51.100.20:4444"
+	req3.Header.Set("X-Real-IP", "203.0.113.10")
+	req3.Header.Set("X-Forwarded-For", "203.0.113.11")
+	if got := api.ClientIP(req3); got != "198.51.100.20" {
+		t.Fatalf("expected direct remote IP when peer is non-loopback, got %q", got)
+	}
+
+	req4, _ := http.NewRequest(http.MethodGet, "/", nil)
+	req4.RemoteAddr = "127.0.0.1:54321"
+	if got := api.ClientIP(req4); got != "127.0.0.1" {
+		t.Fatalf("expected 127.0.0.1 without proxy headers, got %q", got)
+	}
+}
