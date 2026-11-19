@@ -1,0 +1,9 @@
+[Unit]
+Description=KIMOVOLT LAB Daily SQLite Backup
+
+[Service]
+Type=oneshot
+User=kimovolt
+Group=kimovolt
+WorkingDirectory=/opt/kimovolt-lab
+ExecStart=/opt/kimovolt-lab/deploy/backup-sqlite.sh

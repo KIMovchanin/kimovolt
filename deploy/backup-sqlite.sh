@@ -30,6 +30,7 @@ if [ ! -f "$DB_PATH" ]; then
 fi
 
 mkdir -p "$BACKUP_DIR"
+cd "$BACKUP_DIR"
 STAMP="$(date -u +%Y%m%d-%H%M%S)"
 TARGET="$BACKUP_DIR/kimovolt-${STAMP}.db"
 
@@ -41,5 +42,5 @@ else
 fi
 
 gzip -f "$TARGET"
-find "$BACKUP_DIR" -name "kimovolt-*.db.gz" -mtime +"$RETENTION_DAYS" -delete
+find . -maxdepth 1 -name "kimovolt-*.db.gz" -mtime +"$RETENTION_DAYS" -delete
 echo "Backup created: ${TARGET}.gz"

@@ -1,15 +1,15 @@
 # KIMOVOLT LAB — Caddy Reverse Proxy & Automatic HTTPS (Oracle Cloud ARM64)
 
 www.{$KIMOVOLT_DOMAIN:kimovolt.com} {
-    redir https://{$KIMOVOLT_DOMAIN:kimovolt.com}{uri} permanent
+	redir https://{$KIMOVOLT_DOMAIN:kimovolt.com}{uri} permanent
 }
 
 {$KIMOVOLT_DOMAIN:kimovolt.com} {
-    encode zstd gzip
+	encode zstd gzip
 
-    header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
 
-    reverse_proxy 127.0.0.1:{$KIMOVOLT_PORT:8080} {
-        header_up X-Real-IP {remote_host}
-    }
+	reverse_proxy 127.0.0.1:{$KIMOVOLT_PORT:8080} {
+		header_up X-Real-IP {remote_host}
+	}
 }

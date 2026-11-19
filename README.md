@@ -105,8 +105,10 @@ sudo journalctl -u caddy -f
 # Снять консистентный снимок БД вручную (пишет в /opt/kimovolt-lab/backups/kimovolt-*.db.gz)
 sudo -u kimovolt /opt/kimovolt-lab/deploy/backup-sqlite.sh
 
-# Просмотр расписания cron (рекомендуется ежедневно в 03:30 UTC: 30 3 * * * /opt/kimovolt-lab/deploy/backup-sqlite.sh)
-sudo crontab -u kimovolt -l
+# Проверка расписания ежедневного бэкапа (03:30 UTC) и ручной запуск через systemd
+sudo systemctl list-timers kimovolt-backup.timer --no-pager
+sudo systemctl start kimovolt-backup.service
+sudo journalctl -u kimovolt-backup -n 20 --no-pager
 
 # Восстановление из архива (сначала остановить сервис!)
 sudo systemctl stop kimovolt-lab

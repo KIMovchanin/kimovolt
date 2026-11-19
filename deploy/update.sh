@@ -25,7 +25,7 @@ sudo systemctl is-active --quiet kimovolt-lab
 
 echo "Health check ($HEALTH_URL)..."
 for _ in $(seq 1 20); do
-  if curl -fsS "$HEALTH_URL"; then
+  if curl -fs "$HEALTH_URL"; then
     echo ""
     exit 0
   fi
